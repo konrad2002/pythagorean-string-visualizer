@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f5f2">
+    <title>Die klingende Saite — Pythagoreische Stimmung</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="page-header">
+        <p class="eyebrow">Ein interaktives Klanglabor</p>
+        <h1>Die klingende Saite</h1>
+        <p class="intro">Entdecke, wie aus Teilungen und Quinten exakte Tonabstände entstehen.</p>
+      </header>
+
+      <nav class="mode-switch" aria-label="Ansicht auswählen">
+        <button class="mode-button is-active" type="button" data-mode="interval">Intervalle bauen</button>
+        <button class="mode-button" type="button" data-mode="scale">Pythagoreische Tonleiter</button>
+      </nav>
+
+      <section class="workspace" aria-label="Saitenvisualisierung und Herleitung">
+        <div class="visual-column">
+          <section class="card instrument-card" aria-labelledby="string-heading">
+            <div class="card-heading">
+              <div>
+                <p class="eyebrow">Saitenlänge im Verhältnis zu C</p>
+                <h2 id="string-heading">Eine Saite, viele Töne</h2>
+              </div>
+              <span class="note-chip" id="current-note">C</span>
+            </div>
+            <div class="string-wrap">
+              <svg id="string-svg" viewBox="0 0 1200 235" role="img" aria-labelledby="svg-title svg-desc">
+                <title id="svg-title">Saitenlänge und Teilung</title>
+                <desc id="svg-desc">Die Saite wird vom linken festen Ende aus gemessen.</desc>
+              </svg>
+            </div>
+            <div class="measurement">
+              <span class="measurement-label">Exakte Saitenlänge</span>
+              <strong id="current-fraction">1</strong>
+              <span class="measurement-decimal" id="current-decimal">1,0000</span>
+            </div>
+            <p class="pitch-note">Eine kürzere Saite klingt höher. Die Frequenz verhält sich umgekehrt zur Länge.</p>
+            <div class="playback" aria-label="Animationssteuerung">
+              <button class="button button-primary" id="play-button" type="button">Abspielen</button>
+              <button class="button button-secondary" id="previous-button" type="button">Zurück</button>
+              <button class="button button-secondary" id="next-button" type="button">Nächster Schritt</button>
+              <button class="button button-quiet" id="reset-button" type="button">Zurücksetzen</button>
+              <label class="speed-control" for="speed-select">
+                Tempo
+                <select id="speed-select" aria-label="Animationstempo">
+                  <option value="1.5">Langsam</option>
+                  <option value="1" selected>Normal</option>
+                  <option value="0.55">Schnell</option>
+                </select>
+              </label>
+            </div>
+            <p class="live-status" id="live-status" aria-live="polite"></p>
+          </section>
+
+          <section class="card selection-card" aria-labelledby="selection-heading">
+            <div class="card-heading compact-heading">
+              <div>
+                <p class="eyebrow" id="selection-kicker">Ausgangspunkt: C = 1</p>
+                <h2 id="selection-heading">Was möchtest du herleiten?</h2>
+              </div>
+            </div>
+            <div id="interval-picker" class="choice-grid" aria-label="Intervall auswählen">
+              <button type="button" class="choice-button is-selected" data-kind="note" data-id="D">
+                <span class="choice-title">D · Ganzton</span><span class="choice-ratio">8/9</span>
+              </button>
+              <button type="button" class="choice-button" data-kind="interval" data-id="octave">
+                <span class="choice-title">Oktave</span><span class="choice-ratio">1/2</span>
+              </button>
+              <button type="button" class="choice-button" data-kind="interval" data-id="fifth">
+                <span class="choice-title">Quinte</span><span class="choice-ratio">2/3</span>
+              </button>
+              <button type="button" class="choice-button" data-kind="interval" data-id="fourth">
+                <span class="choice-title">Quarte</span><span class="choice-ratio">3/4</span>
+              </button>
+            </div>
+            <p class="selection-explanation" id="selection-explanation"></p>
+          </section>
+
+          <section class="card scale-card" aria-labelledby="scale-heading">
+            <div class="card-heading compact-heading">
+              <div>
+                <p class="eyebrow">Tonübersicht</p>
+                <h2 id="scale-heading">Die Töne im Referenzbereich</h2>
+              </div>
+            </div>
+            <div class="scale-list" id="scale-list" aria-label="Töne auswählen"></div>
+          </section>
+        </div>
+
+        <aside class="card derivation-card" aria-labelledby="derivation-heading">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Schritt für Schritt</p>
+              <h2 id="derivation-heading">Herleitung</h2>
+            </div>
+            <span class="step-count" id="step-count"></span>
+          </div>
+          <p class="derivation-summary" id="derivation-summary"></p>
+          <ol class="derivation-list" id="derivation-list" aria-label="Herleitungsschritte"></ol>
+          <div class="frequency-callout">
+            <span class="callout-icon" aria-hidden="true">↕</span>
+            <p id="frequency-explanation"></p>
+          </div>
+          <div class="legend" aria-label="Legende">
+            <span><i class="legend-mark legend-string"></i> gemessene Saitenlänge</span>
+            <span><i class="legend-mark legend-division"></i> Teilungspunkte</span>
+            <span><i class="legend-mark legend-selection"></i> ausgewählter Abschnitt</span>
+          </div>
+        </aside>
+      </section>
+
+      <footer class="page-footer">
+        <span>Alle Brüche werden exakt berechnet und gekürzt.</span>
+        <span>Die Quinte: Frequenz 3:2 · Saitenlänge 2:3</span>
+      </footer>
+    </main>
+  </body>
+</html>
